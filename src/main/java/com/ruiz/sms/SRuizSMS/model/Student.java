@@ -1,6 +1,7 @@
 package com.ruiz.sms.SRuizSMS.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,13 +16,11 @@ public class Student implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	
-	private int id;
-	
 	@Id
+	@Column(name ="email",unique=true, nullable=false,length=200)
 	private String email;
 	private String fullName;
-	private String passowrd;
+	private String password;
 	
 	/**
 	 * Student is the source
@@ -35,10 +34,10 @@ public class Student implements Serializable{
 	
 	
 	public Student() {
-		this.id=0;
+		
 		this.email="";
 		this.fullName="";
-		this.passowrd="";
+		this.password="";
 		this.courseSet = null;
 	}
 	
@@ -46,16 +45,15 @@ public class Student implements Serializable{
 		super();
 		this.email = email;
 		this.fullName = fullName;
-		this.passowrd = passowrd;
+		this.password = passowrd;
 	}
 	
 	
-	public Student(int id, String email, String fullName, String passowrd, Set<Course> courseSet) {
-		super();
-		this.id = id;
+	public Student(String email, String fullName, String passowrd, Set<Course> courseSet) {
+		
 		this.email = email;
 		this.fullName = fullName;
-		this.passowrd = passowrd;
+		this.password = passowrd;
 		this.courseSet = courseSet;
 	}
 
@@ -67,13 +65,6 @@ public class Student implements Serializable{
 
 	public void setCourseSet(Set<Course> courseSet) {
 		this.courseSet = courseSet;
-	}
-
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
 	}
 	public String getEmail() {
 		return email;
@@ -88,27 +79,23 @@ public class Student implements Serializable{
 		this.fullName = fullName;
 	}
 	public String getPassowrd() {
-		return passowrd;
+		return password;
 	}
 	public void setPassowrd(String passowrd) {
-		this.passowrd = passowrd;
+		this.password = passowrd;
 	}
 
 
 
 	@Override
 	public String toString() {
-		return "Student id:" + id + " | email:" + email + " | fullName:" + fullName + " | passowrd:" + passowrd;
+		return "Email: " + email + " | fullName: " + fullName + " | passowrd: " + password +" | Course set: "+courseSet;
 	}
-
-
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(email, fullName, id, passowrd);
+		return Objects.hash(courseSet, email, fullName, password);
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -119,10 +106,13 @@ public class Student implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Student other = (Student) obj;
-		return Objects.equals(email, other.email) && Objects.equals(fullName, other.fullName) && id == other.id
-				&& Objects.equals(passowrd, other.passowrd);
+		return Objects.equals(courseSet, other.courseSet) && Objects.equals(email, other.email)
+				&& Objects.equals(fullName, other.fullName)
+				&& Objects.equals(password, other.password);
 	}
-	
+
+
+
 	
 	
 }

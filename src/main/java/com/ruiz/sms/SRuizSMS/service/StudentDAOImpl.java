@@ -1,5 +1,6 @@
 package com.ruiz.sms.SRuizSMS.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,8 +18,12 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 
 	private String email;
 	private String password;
+	private ArrayList<Student> sudentObj;
 	CourseDAO qry = new CourseDAOImpl();
 	Scanner input = new Scanner(System.in);
+	
+	
+	
 	@Override
 	public List<Student> getAllStudents() {
 		Session session = SMSUtil.getConnection();
@@ -27,7 +32,7 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 		List<Student> studentResults = qry.getResultList();
 		
 		for(Student s: studentResults) {
-			System.out.println("Student id: "+s.getId()+" Student Name: "+s.getFullName());
+			System.out.println(" Student Name: "+s.getFullName()+"Student email: "+s.getEmail());
 		}
 		session.close();
 		return studentResults;
@@ -48,14 +53,9 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 
 	@Override
 	public void validateStudent(String email, String password) {
-		Session session = SMSUtil.getConnection();
-		String hql = "FROM Student WHERE email = :email";
-		TypedQuery<Student> qry = session.createQuery(hql,Student.class);
-		qry.setParameter("email", email);
-		Student student = qry.getSingleResult();
-		
+		Student student = this.getStudentByEmail(email);
 		if(student.getEmail().equals(email) && student.getPassowrd().equals(password)) {
-			getAllStudents();
+			getStudentCourses(email);
 			runStudentMenu();
 		}else {
 			System.out.println("Invalid email or password. Please try again");
@@ -65,14 +65,15 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 		}
 		
 	}
+	// need to change
 	public void runStudentMenu() {
 		int selection =0;
 		System.out.println("\n Welcome, please make a selection");
-		
+		Student student = new Student();////Need to figure out
 		while(true) {
 			System.out.println("Student Menu");
 			System.out.println("------------");
-			System.out.println("1. Login");
+			System.out.println("1. Register to course");
 			System.out.println("2. List Student with email");
 			System.out.println("3. List all available courses");
 			System.out.println("4. Logout");
@@ -80,7 +81,10 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 			selection = input.nextInt();
 			
 			switch(selection) {
-			case 1: login();
+			case 1: System.out.println("Available Courses");
+					qry.getAllCourses();
+					System.out.println("Pleast enter course id you would like to add");
+					registerStudentToCourse(student);
 					continue;
 			case 2: System.out.print("Enter email: ");
 					String email = input.nextLine();
@@ -110,15 +114,23 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 	}
 	@Override
 	public void registerStudentToCourse(Student student) {
-		// TODO Auto-generated method stub
+		Session session = SMSUtil.getConnection();
+		String hql = "";
+		
 		
 	}
 
 	@Override
 	public List<Course> getStudentCourses(String email) {
 		Session session = SMSUtil.getConnection();
-		String hql = "SELECT c.Name FROM Course c";
-		return null;
+		String hql = "SELECT c.Name FROM Course c JOIN Student_Course sc ON c.id = sc.courseSet_id WHERE sc.Student_email=:email";
+		TypedQuery<Course> qry = session.createQuery(hql,Course.class);
+		qry.setParameter("email", email);
+		List<Course> stCourses =qry.getResultList();
+		for(Course c: stCourses) {
+			System.out.println("Course ID: "+c.getId()+"Course Name: "+ c.getName()+" Instructor: "+c.getInstructor());
+		}
+		return stCourses;
 	}
 
 }
