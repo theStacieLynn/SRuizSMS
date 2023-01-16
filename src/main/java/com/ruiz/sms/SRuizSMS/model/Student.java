@@ -2,6 +2,7 @@ package com.ruiz.sms.SRuizSMS.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -30,12 +31,16 @@ public class Student implements Serializable{
 	 * created a course object
 	 */
 	@ManyToMany(targetEntity = Course.class)
-	private Course course;
+	private Set<Course> courseSet;
 	
 	
-	public Student() {}
-	
-	
+	public Student() {
+		this.id=0;
+		this.email="";
+		this.fullName="";
+		this.passowrd="";
+		this.courseSet = null;
+	}
 	
 	public Student(String email, String fullName, String passowrd) {
 		super();
@@ -45,6 +50,25 @@ public class Student implements Serializable{
 	}
 	
 	
+	public Student(int id, String email, String fullName, String passowrd, Set<Course> courseSet) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.fullName = fullName;
+		this.passowrd = passowrd;
+		this.courseSet = courseSet;
+	}
+
+
+
+	public Set<Course> getCourseSet() {
+		return courseSet;
+	}
+
+	public void setCourseSet(Set<Course> courseSet) {
+		this.courseSet = courseSet;
+	}
+
 	public int getId() {
 		return id;
 	}
