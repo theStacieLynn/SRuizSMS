@@ -1,5 +1,7 @@
 package com.ruiz.sms.SRuizSMS.service;
 
-public class StudentDAOImpl {
+import com.ruiz.sms.SRuizSMS.util.SMSUtil;
+
+public class StudentDAOImpl extends SMSUtil{
 
 }
