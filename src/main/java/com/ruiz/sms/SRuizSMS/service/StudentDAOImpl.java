@@ -1,8 +1,10 @@
 package com.ruiz.sms.SRuizSMS.service;
 
-import java.util.ArrayList;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
@@ -12,13 +14,13 @@ import com.ruiz.sms.SRuizSMS.daointerface.CourseDAO;
 import com.ruiz.sms.SRuizSMS.daointerface.StudentDAO;
 import com.ruiz.sms.SRuizSMS.model.Course;
 import com.ruiz.sms.SRuizSMS.model.Student;
-import com.ruiz.sms.SRuizSMS.util.SMSUtil;
+import com.ruiz.sms.SRuizSMS.util.HibernateUtil;
 
-public class StudentDAOImpl extends SMSUtil implements StudentDAO{
+public class StudentDAOImpl extends HibernateUtil implements StudentDAO{
 
 	private String email;
 	private String password;
-	private ArrayList<Student> sudentObj;
+
 	CourseDAO qry = new CourseDAOImpl();
 	Scanner input = new Scanner(System.in);
 	
@@ -26,7 +28,7 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 	
 	@Override
 	public List<Student> getAllStudents() {
-		Session session = SMSUtil.getConnection();
+		Session session = HibernateUtil.getConnection();
 		String hql = "FROM Student";
 		TypedQuery<Student> qry = session.createQuery(hql,Student.class);
 		List<Student> studentResults = qry.getResultList();
@@ -40,7 +42,7 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 
 	@Override
 	public Student getStudentByEmail(String email) {
-		Session session = SMSUtil.getConnection();
+		Session session = HibernateUtil.getConnection();
 		String hql = "FROM Student WHERE email = :email";
 		TypedQuery<Student> qry = session.createQuery(hql, Student.class);
 		qry.setParameter("email", email);
@@ -55,7 +57,7 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 	public void validateStudent(String email, String password) {
 		Student student = this.getStudentByEmail(email);
 		if(student.getEmail().equals(email) && student.getPassowrd().equals(password)) {
-			getStudentCourses(email);
+			//getStudentCourses(email);
 			runStudentMenu();
 		}else {
 			System.out.println("Invalid email or password. Please try again");
@@ -74,8 +76,7 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 			System.out.println("Student Menu");
 			System.out.println("------------");
 			System.out.println("1. Register to course");
-			System.out.println("2. List Student with email");
-			System.out.println("3. List all available courses");
+			System.out.println("2. List all available courses");
 			System.out.println("4. Logout");
 			
 			selection = input.nextInt();
@@ -84,14 +85,11 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 			case 1: System.out.println("Available Courses");
 					qry.getAllCourses();
 					System.out.println("Pleast enter course id you would like to add");
-					registerStudentToCourse(student);
+					int id = input.nextInt();
+					registerStudentToCourse(student,id);
 					continue;
-			case 2: System.out.print("Enter email: ");
-					String email = input.nextLine();
-					getStudentByEmail(email);
-					continue;
-			case 3: qry.getAllCourses();
-			case 4: logout();
+			case 2: qry.getAllCourses();
+			case 3: logout();
 			
 			}
 			
@@ -113,16 +111,23 @@ public class StudentDAOImpl extends SMSUtil implements StudentDAO{
 		System.exit(0);
 	}
 	@Override
-	public void registerStudentToCourse(Student student) {
-		Session session = SMSUtil.getConnection();
-		String hql = "";
-		
+	public void registerStudentToCourse(Student student, int id) {
+		Session session = HibernateUtil.getConnection();
+		Set<Course> courseSet1 = new HashSet<Course>();
+		String hql = "From Course Where id = :id";
+		TypedQuery<Course> courseQry = session.createQuery(hql, Course.class);
+		courseQry.setParameter("id", id);
+		Course course = courseQry.getSingleResult();
+		courseSet1.add(course);
+		student.setCourseSet(courseSet1);
+		session.save(student);
+	
 		
 	}
 
 	@Override
 	public List<Course> getStudentCourses(String email) {
-		Session session = SMSUtil.getConnection();
+		Session session = HibernateUtil.getConnection();
 		String hql = "SELECT c.Name FROM Course c JOIN Student_Course sc ON c.id = sc.courseSet_id WHERE sc.Student_email=:email";
 		TypedQuery<Course> qry = session.createQuery(hql,Course.class);
 		qry.setParameter("email", email);

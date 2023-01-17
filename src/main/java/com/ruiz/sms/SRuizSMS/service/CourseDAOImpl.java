@@ -8,13 +8,13 @@ import org.hibernate.Session;
 
 import com.ruiz.sms.SRuizSMS.daointerface.CourseDAO;
 import com.ruiz.sms.SRuizSMS.model.Course;
-import com.ruiz.sms.SRuizSMS.util.SMSUtil;
+import com.ruiz.sms.SRuizSMS.util.HibernateUtil;
 
-public class CourseDAOImpl extends SMSUtil implements CourseDAO{
+public class CourseDAOImpl extends HibernateUtil implements CourseDAO{
 
 	@Override
 	public List<Course> getAllCourses() {
-		Session session = SMSUtil.getConnection();
+		Session session = HibernateUtil.getConnection();
 		String hql = "FROM Course";
 		TypedQuery<Course> qry = session.createQuery(hql,Course.class);
 		List<Course> courseResults = qry.getResultList();

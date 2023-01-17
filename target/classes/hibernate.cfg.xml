@@ -9,7 +9,7 @@
        
          <!-- Database connection settings -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/SRuizSMS?createDatabaseIfNotExist=true</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/smsdb?createDatabaseIfNotExist=true</property>
         <property name="connection.username">root</property>
         <property name="connection.password">password</property>
 
@@ -21,8 +21,8 @@
   
         <!--   Mapping entity file -->
         
-      <mapping class="com.ruiz.SRuizSMS.model.Student"/> 
-      <mapping class="com.ruiz.SRuizSMS.model.Course"/> 
+      <mapping class="com.ruiz.sms.SRuizSMS.model.Student"/> 
+      <mapping class="com.ruiz.sms.SRuizSMS.model.Course"/> 
 
     </session-factory>
 </hibernate-configuration>

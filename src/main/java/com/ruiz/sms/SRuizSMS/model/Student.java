@@ -1,11 +1,14 @@
 package com.ruiz.sms.SRuizSMS.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table
@@ -107,9 +110,11 @@ public class Student implements Serializable{
 			return false;
 		Student other = (Student) obj;
 		return Objects.equals(courseSet, other.courseSet) && Objects.equals(email, other.email)
-				&& Objects.equals(fullName, other.fullName)
-				&& Objects.equals(password, other.password);
+				&& Objects.equals(fullName, other.fullName) && Objects.equals(password, other.password);
 	}
+
+	
+	
 
 
 
